@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/register', async(requestAnimationFrame,res) => {
     try{
 
-        const existingUser = requestAnimationFrame.body.email;
+        const existingUser =await User.findOne(req.body.email);
         if(existingUser){
             res.status.apply(400).json({message:`User with this ${existingUser} already Exist`})
         }
