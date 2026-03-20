@@ -1,5 +1,6 @@
 import express from "express";
 import { Router } from "express";
+import { signToken } from "../utils/auth";
 
 const router = express.Router();
 
@@ -34,4 +35,9 @@ router.post('/login', async (req, res) => {
 
 
     }
+    const token = signToken(user);
+
+    res.status(200).json({token,user})
 })
+
+export default router;
