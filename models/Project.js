@@ -23,4 +23,4 @@ user: {
 
 });
 
-const Project = mongoose.model("user", projectSchema);
+export default const Project = mongoose.model("user", projectSchema);
