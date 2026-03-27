@@ -1,12 +1,14 @@
 import express, { Router } from "express";
 import Project from "../models/Project.js";
 import { authMiddleware } from "../utils/auth.js";
+import Task from '../models/Task.js'
+
 
 const router = express.Router();
 
 router.use(authMiddleware);
 
-//POST /api/projects
+//POST /api/projects--- create a new project
 router.post("/", async (req, res) => {
   try {
     const newProject = await Project.create({
@@ -15,11 +17,12 @@ router.post("/", async (req, res) => {
     });
     res.status(201).json(newProject);
   } catch (error) {
-    res.status(400).json({ message: "cannot post request" });
+    res.status(400).json({ message: error.message });
   }
 });
 
-//GET /api/projects
+//GET /api/projects  --- get all projects for the valid user
+
 router.get("/", async (req, res) => {
   try {
     const projects = await Project.find({ user: req.user._id }).populate(
@@ -28,11 +31,11 @@ router.get("/", async (req, res) => {
     res.status(200).json(projects);
   } catch(error) {
 
-     res.status(500).json({ message: errorMessage });
+     res.status(500).json({ message: error.Message });
   }
 });
 
-//GET /api/projects/:id
+//GET /api/projects/:id --- get a single project
 
 router.get("/:id", async (req, res) => {
   try {
@@ -46,11 +49,11 @@ router.get("/:id", async (req, res) => {
     }
     res.status(200).json(project);
   } catch(error) {
-    res.status(400).json({ message: "cannot post request" });
+    res.status(400).json({ message: error.message  });
   }
 });
 
-//PUT /api/projects/:id
+//PUT /api/projects/:id  -- update a project
 
 
 router.put("/:id", async (req, res) => {
@@ -61,9 +64,9 @@ router.put("/:id", async (req, res) => {
      return req.status(404).json({ message: "Project not found" });
     }
 if(project.user.toString() !== req.user._id){
-     return req.status(403).json({ message: "user is not authorized to updatete this" });
+     return res.status(403).json({ message: "user is not authorized to updatete this project" });
 }
-  const updateProject = await Project.findByIdAndUpdate(
+  const updatedProject = await Project.findByIdAndUpdate(
     req.params.id,
       req.body,
       { new: true },
@@ -74,7 +77,7 @@ if(project.user.toString() !== req.user._id){
   }
 });
 
-//DELETE /api/projects/:id
+//DELETE /api/projects/:id-------------- delete a project and it's tasks
 router.delete("/:id", async (req, res) => {
   try {
     const project = await Project.findOne(req.params.id);
@@ -83,13 +86,11 @@ router.delete("/:id", async (req, res) => {
      return req.status(404).json({ message: "Project not found" });
     }
 if(project.user.toString() !== req.user._id){
-     return res.status(403).json({ message: "user is not authorized to delete this" });
+     return res.status(403).json({ message: "user is not authorized to delete this project" });
 }
-  const deleteProject = await Project.findByIdAndDelete(
-    req.params.id,
-      
-  );
-   res.status(201).json(updatedProject);
+  const deleteProject = await Project.findByIdAndDelete(req.params.id );
+  const deletedTasks = await Task.deleteMany({ project: req.params.id});
+   res.status(201).json(deletedProject, deletedTasks);
   
   } catch (error){
     res.status(500).json(err);
