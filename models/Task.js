@@ -1,6 +1,4 @@
 import mongoose, {Schema} from "mongoose";
-import bcrypt from "bcrypt"
-
 
 const taskSchema = new Schema({
     title:{
@@ -12,6 +10,7 @@ const taskSchema = new Schema({
 
     description:{
  type: String,
+  required: true
     
     },
     status: {
@@ -22,8 +21,13 @@ enum:[ "To Do", "In Progress", "Done"],
 
     project:{
         type: Schema.Types.ObjectId,
+        ref: 'Project',
+        required: true
 
         }
 
 
 })
+
+const Task = mongoose.model('Task', taskSchema);
+export default Task;

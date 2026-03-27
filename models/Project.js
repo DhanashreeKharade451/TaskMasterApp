@@ -1,5 +1,5 @@
 import mongoose, {Schema} from "mongoose";
-import bcrypt from "bcrypt"
+
 
 
 const projectSchema = new Schema({
@@ -7,6 +7,7 @@ const projectSchema = new Schema({
     name: {
         type: String,
         required: true,
+        unique: true
     },
 
     description: {
@@ -23,4 +24,5 @@ user: {
 
 });
 
-export default const Project = mongoose.model("user", projectSchema);
+ const Project = mongoose.model("Project", projectSchema);
+ export default Project;
