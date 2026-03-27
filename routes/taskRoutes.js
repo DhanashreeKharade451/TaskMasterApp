@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-//POST /api/projects/:projectId/tasks
+//POST /api/projects/:projectId/tasks    --- create a task
 router.post('/:projectId/tasks', async (req,res) =>{
     try{
 
@@ -20,7 +20,7 @@ router.post('/:projectId/tasks', async (req,res) =>{
             res.status(403).json({message : 'User is not authorize to create a task'})
         }
 
-        const newTask = await Task.create({...req.body, project: req.params.projectId})
+        const newTask = await Task.create({...req.body, project: req.params.projectId});
         res.status(201).json(newTask);
 
 
@@ -29,33 +29,33 @@ router.post('/:projectId/tasks', async (req,res) =>{
     }
 })
 
-//GET /api/projects/:projectId/tasks
+//GET /api/projects/:projectId/tasks      -- get all tasks
 
-router.get('/:projectId/tasks', async (req,res) =>{
+router.get('/:projectId/tasks', async (req, res) =>{
     try{
         const tasks = await Task.find({
-            user: req.user_id,
-            project: req.params.projectId
-        });
-        res.status(201).json(tasks);
+            //user: req.user_id,
+            project: req.params.projectId,
+        }).populate("project")
+        res.status(200).json(tasks);
       
     }catch(error){
           res.status(500).json({message:error.message})
     }
-})
+});
 
 
-//PUT /api/tasks/:taskId
+//PUT /api/tasks/:taskId---------------Update a single task
 
 router.put('/:taskId', async (req,res) =>{
     try{
-        const task = await Task.findOne(req.params.taskId)
+        const task = await Task.findOne({_id: req.params.taskId}).populate("project");
 
         if(!task){
             return res.status(404).json({message: "Task not found"})
         }
 
-        if (task.project.user_id.toString() !== req.user._id){
+        if (task.project.user.toString() !== req.user._id){
             return res.status(403).json({message: 'User is not authorized to update the task'})
         }  
 
@@ -67,15 +67,15 @@ router.put('/:taskId', async (req,res) =>{
 
         res.status(201).json(updateTask);
     }catch(error){
-         res.status(500).json({message: errorMessage});
+         res.status(500).json({message: error.message});
     }
 })
 
-//DELETE /api/tasks/:taskId
+//DELETE /api/tasks/:taskId  ------------------Delete a single task.
 
 router.delete(":/taskId", async (req,res) =>{
     try{
-         const task = await Task.findOne(req.params.taskId)
+         const task = await Task.findOne({_id: req.params.taskId}).populate("project");
 
          if(!task){
             return res.status(404).json({message: "Task not found"})
@@ -86,10 +86,10 @@ router.delete(":/taskId", async (req,res) =>{
         }  
 
         const deletedTask = await Task.findByIdAndDelete(req.params.taskId);
-        res.status(201).json(deletedTask);           
+        res.status(200).json(deletedTask);           
 
     }catch(error){
-          res.status(500).json({message: error.Message});
+          res.status(500).json({message: error.message});
     }
 })
 
