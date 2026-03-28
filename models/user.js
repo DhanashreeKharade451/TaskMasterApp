@@ -23,7 +23,7 @@ const userSchema = new Schema({
 });
 
 // Set up pre-save middleware to create password
-userSchema.pre("Save", async function () {
+userSchema.pre("save", async function (next) {
     //'this' refers to the document we are trying to save to the database
     if(this.isNew || this.isModified("password")){
         //no of times hash algorithms run

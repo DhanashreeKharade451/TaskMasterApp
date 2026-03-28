@@ -12,8 +12,8 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json())
 
-app.use('/api/user', userRoutes);
-app.use('/api/projects', projectRoutes, taskRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/projects', projectRoutes);
 app.use('/api/task', taskRoutes )
 
 app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));
