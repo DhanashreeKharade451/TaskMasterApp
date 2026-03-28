@@ -88,12 +88,12 @@ router.delete("/:id", async (req, res) => {
 if(project.user.toString() !== req.user._id){
      return res.status(403).json({ message: "user is not authorized to delete this project" });
 }
-  const deleteProject = await Project.findByIdAndDelete(req.params.id );
+  const deletedProject = await Project.findByIdAndDelete(req.params.id );
   const deletedTasks = await Task.deleteMany({ project: req.params.id});
    res.status(201).json(deletedProject, deletedTasks);
   
   } catch (error){
-    res.status(500).json(err);
+    res.status(500).json(error);
   }
 });
 
