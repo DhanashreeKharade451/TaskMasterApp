@@ -6,6 +6,7 @@ import projectRoutes from './routes/projectRoutes.js'
 import taskRoutes from './routes/taskRoutes.js'
 
 const app = express();
+
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json())
