@@ -4,6 +4,7 @@ import './config/connection.js'
 import userRoutes from './routes/userRoutes.js'
 import projectRoutes from './routes/projectRoutes.js'
 import taskRoutes from './routes/taskRoutes.js'
+import { authMiddleware } from './utils/auth.js'
 
 const app = express();
 

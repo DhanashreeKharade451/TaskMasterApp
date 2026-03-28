@@ -1,6 +1,6 @@
 import express from 'express'
 import Task from '../models/Task.js'
-import { authMiddleware } from '../utils/auth'
+import { authMiddleware } from '../utils/auth.js'
 import Project from '../models/Project.js'
 
 const router = express.Router();
@@ -73,7 +73,7 @@ router.put('/:taskId', async (req,res) =>{
 
 //DELETE /api/tasks/:taskId  ------------------Delete a single task.
 
-router.delete(":/taskId", async (req,res) =>{
+router.delete("/:taskId", async (req,res) =>{
     try{
          const task = await Task.findOne({_id: req.params.taskId}).populate("project");
 
