@@ -31,7 +31,7 @@ router.get("/", async (req, res) => {
     res.status(200).json(projects);
   } catch(error) {
 
-     res.status(500).json({ message: error.Message });
+     res.status(500).json({ message: error.message });
   }
 });
 
@@ -73,7 +73,7 @@ if(project.user.toString() !== req.user._id){
   );
    res.status(201).json(updatedProject);
   } catch (error){
-    res.status(500).json(err);
+    res.status(500).json(error);
   }
 });
 
